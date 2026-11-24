@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Сокровища богов — Greek Mythology Challenge</title>
+
+    <style>
+        :root {
+            --gold: #f4cf72;
+            --gold2: #b77b26;
+            --ink: #10142b;
+            --panel: rgba(13, 18, 43, .88);
+            --cream: #fff3d5
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--cream);
+            font-family: Georgia, 'Times New Roman', serif;
+            background:
+
+                radial-gradient(ellipse at 50% 15%, rgba(107, 78, 155, .45), transparent 45%),
+
+                linear-gradient(180deg, rgba(8, 12, 32, .55), rgba(8, 10, 26, .94)),
+
+                url('https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?auto=format&fit=crop&w=2000&q=85') center/cover fixed,
+
+                #11152e
+        }
+
+        body:before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background: repeating-linear-gradient(90deg, transparent 0 38px, rgba(244, 207, 114, .035) 39px 41px);
+            mix-blend-mode: screen
+        }
+
+        header {
+            text-align: center;
+            padding: 28px 16px 14px
+        }
+
+        .kicker {
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: #e6c47c;
+            font-size: .78rem
+        }
+
+        h1 {
+            font-size: clamp(2rem, 6vw, 4rem);
+            margin: 8px 0;
+            color: #ffe6a6;
+            text-shadow: 0 3px 18px #000, 0 0 18px #bd873e
+        }
+
+        .subtitle {
+            color: #e7d5ad
+        }
+
+        main {
+            width: min(1050px, 94%);
+            margin: 0 auto 40px
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid rgba(244, 207, 114, .55);
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 15px 50px #0009, inset 0 0 30px #b77b2610;
+            backdrop-filter: blur(8px)
+        }
+
+        .scoreboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin: 16px 0
+        }
+
+        .team {
+            padding: 14px;
+            border-radius: 15px;
+            border: 1px solid #ffffff30;
+            text-align: center;
+            background: #ffffff0c
+        }
+
+        .team.blue {
+            border-color: #6dbdff88
+        }
+
+        .team.red {
+            border-color: #ff8c8c88
+        }
+
+        .team h3 {
+            margin: 0 0 5px
+        }
+
+        .coins {
+            font-size: 1.5rem;
+            color: var(--gold)
+        }
+
+        .progress-wrap {
+            height: 9px;
+            background: #ffffff20;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 14px 0
+        }
+
+        #progress {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #9c641e, #ffe59a);
+            transition: width .35s
+        }
+
+        .meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+            color: #e8d4a8;
+            font-size: .95rem
+        }
+
+        .question {
+            font-size: clamp(1.25rem, 3vw, 1.8rem);
+            line-height: 1.35;
+            text-align: center;
+            margin: 22px 0
+        }
+
+        .choices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px
+        }
+
+        button {
+            font: inherit;
+            cursor: pointer
+        }
+
+        .answer {
+            border: 1px solid #d7b66b88;
+            background: linear-gradient(135deg, #283052, #171c39);
+            color: #fff0ce;
+            border-radius: 13px;
+            padding: 15px;
+            text-align: left;
+            transition: .2s
+        }
+
+        .answer:hover:not(:disabled) {
+            transform: translateY(-2px);
+            border-color: #ffe39a;
+            background: linear-gradient(135deg, #4b3b5b, #202746)
+        }
+
+        .answer:disabled {
+            cursor: default;
+            opacity: .85
+        }
+
+        .answer.correct {
+            background: #245b45;
+            border-color: #80d5a6
+        }
+
+        .answer.wrong {
+            background: #713b43;
+            border-color: #f2a0a0
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 18px
+        }
+
+        .primary,
+        .secondary {
+            border-radius: 999px;
+            padding: 12px 22px;
+            border: 1px solid var(--gold);
+            font-weight: bold
+        }
+
+        .primary {
+            background: linear-gradient(135deg, #f4d27b, #b77b26);
+            color: #21172a
+        }
+
+        .secondary {
+            background: #ffffff0d;
+            color: #ffe9b6
+        }
+
+        .hidden {
+            display: none !important
+        }
+
+        .chest {
+            font-size: 3rem;
+            text-align: center;
+            filter: drop-shadow(0 5px 12px #000)
+        }
+
+        #feedback {
+            text-align: center;
+            min-height: 28px;
+            margin-top: 14px;
+            color: #ffe19a
+        }
+
+        #result {
+            text-align: center
+        }
+
+        #result h2 {
+            color: #ffe5a0;
+            font-size: 2rem
+        }
+
+        .small {
+            color: #d9c9a6;
+            font-size: .9rem
+        }
+
+        @media(max-width:600px) {
+            .choices {
+                grid-template-columns: 1fr
+            }
+
+            .panel {
+                padding: 16px
+            }
+
+            .scoreboard {
+                gap: 8px
+            }
+
+            .team {
+                padding: 10px
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <header>
+
+        <div class="kicker">Мифы • Боги • Герои • Тайны</div>
+
+        <h1>Сокровища богов</h1>
+
+        <div class="subtitle">Путешествие в волшебный мир Древней Греции</div>
+
+    </header>
+
+    <main>
+
+        <section id="game" class="panel">
+
+            <div class="chest">🏛️ ✨ 🏺</div>
+
+            <div class="scoreboard">
+
+                <div class="team blue">
+                    <h3>🔵 Синяя команда</h3>
+                    <div class="coins"><span id="blueScore">0</span> 🪙</div>
+                </div>
+
+                <div class="team red">
+                    <h3>🔴 Красная команда</h3>
+                    <div class="coins"><span id="redScore">0</span> 🪙</div>
+                </div>
+
+            </div>
+
+            <div class="meta"><span id="round">Вопрос 1 из 30</span><span id="category">Боги Олимпа</span><span
+                    id="turn">Отвечает: 🔵 Синяя команда</span></div>
+
+            <div class="progress-wrap">
+                <div id="progress"></div>
+            </div>
+
+            <div class="question" id="question">Загрузка вопроса…</div>
+
+            <div class="choices" id="choices"></div>
+
+            <div id="feedback" aria-live="polite"></div>
+
+            <div class="actions"><button class="secondary" id="next" disabled>Следующий вопрос →</button><button
+                    class="secondary" id="restart">Начать заново</button></div>
+
+        </section>
+
+        <section id="result" class="panel hidden">
+
+            <div class="chest">🎁✨🏆</div>
+            <h2>Сокровища найдены!</h2>
+
+            <p id="winner"></p>
+            <p id="finalScores"></p>
+
+            <button class="primary" onclick="restartGame()">Сыграть ещё раз</button>
+
+        </section>
+
+        <p class="small" style="text-align:center">Правильный ответ приносит команде 10 золотых монет. Команды отвечают
+            по очереди.</p>
+
+    </main>
+
+    <script>
+
+        const questions = [
+
+            { c: "Боги Олимпа", q: "Кто считался верховным богом древнегреческого пантеона?", a: ["Зевс", "Аполлон", "Арес", "Гермес"], k: 0 },
+
+            { c: "Боги Олимпа", q: "Кем приходилась Афина Зевсу?", a: ["Сестрой", "Дочерью", "Женой", "Матерью"], k: 1 },
+
+            { c: "Боги Олимпа", q: "Какой бог властвовал над морями?", a: ["Аид", "Гефест", "Посейдон", "Дионис"], k: 2 },
+
+            { c: "Боги Олимпа", q: "Кто был богиней брака и семьи?", a: ["Артемида", "Деметра", "Афродита", "Гера"], k: 3 },
+
+            { c: "Боги Олимпа", q: "Какой бог был покровителем искусств, музыки и прорицания?", a: ["Аполлон", "Арес", "Гермес", "Гефест"], k: 0 },
+
+            { c: "Боги Олимпа", q: "Кто был богом подземного царства?", a: ["Посейдон", "Аид", "Зевс", "Дионис"], k: 1 },
+
+            { c: "Греческие герои", q: "Как звали героя, совершившего двенадцать подвигов?", a: ["Персей", "Тесей", "Геракл", "Одиссей"], k: 2 },
+
+            { c: "Греческие герои", q: "Кто победил Медузу Горгону?", a: ["Ахиллес", "Ясон", "Орфей", "Персей"], k: 3 },
+
+            { c: "Греческие герои", q: "Как звали царя Итаки, героя поэмы Гомера?", a: ["Одиссей", "Гектор", "Патрокл", "Менелай"], k: 0 },
+
+            { c: "Греческие герои", q: "Кто был главным героем похода аргонавтов за Золотым руном?", a: ["Тесей", "Ясон", "Беллерофонт", "Агамемнон"], k: 1 },
+
+            { c: "Греческие герои", q: "Какое место считалось единственным уязвимым местом Ахиллеса?", a: ["Плечо", "Ладонь", "Пятка", "Колено"], k: 2 },
+
+            { c: "Греческие герои", q: "Кто, согласно мифу, построил лабиринт для Минотавра?", a: ["Орфей", "Дедал", "Икар", "Гефест"], k: 1 },
+
+            { c: "Мифические существа", q: "Какое существо имело тело человека и голову быка?", a: ["Кентавр", "Грифон", "Минотавр", "Цербер"], k: 2 },
+
+            { c: "Мифические существа", q: "Сколько голов обычно было у Цербера?", a: ["Одна", "Две", "Три", "Семь"], k: 2 },
+
+            { c: "Мифические существа", q: "Кто превращал людей в камень своим взглядом?", a: ["Сирена", "Медуза Горгона", "Химера", "Сфинкс"], k: 1 },
+
+            { c: "Мифические существа", q: "Как назывались существа, заманивавшие моряков прекрасным пением?", a: ["Нимфы", "Музы", "Сирены", "Мойры"], k: 2 },
+
+            { c: "Мифические существа", q: "Как называлось существо с головой льва, телом козы и хвостом змеи?", a: ["Гидра", "Химера", "Пегас", "Грифон"], k: 1 },
+
+            { c: "Подвиги и приключения", q: "Какое яблоко стало причиной спора между богинями и началом событий Троянской войны?", a: ["Золотое яблоко раздора", "Яблоко Гесперид", "Яблоко Афины", "Яблоко бессмертия"], k: 0 },
+
+            { c: "Подвиги и приключения", q: "Что должен был добыть Геракл в одном из своих подвигов?", a: ["Золотое руно", "Яблоки Гесперид", "Трезубец Посейдона", "Лук Аполлона"], k: 1 },
+
+            { c: "Подвиги и приключения", q: "Как назывался корабль аргонавтов?", a: ["Троянский конь", "Пегас", "Арго", "Олимп"], k: 2 },
+
+            { c: "Подвиги и приключения", q: "Кто помог Тесею выбраться из лабиринта с помощью нити?", a: ["Елена", "Кассандра", "Ариадна", "Андромаха"], k: 2 },
+
+            { c: "Подвиги и приключения", q: "Как называлась война, описанная в «Илиаде»?", a: ["Пелопоннесская", "Троянская", "Персидская", "Фиванская"], k: 1 },
+
+            { c: "Легенды Древней Греции", q: "Кто, согласно мифу, подарил людям огонь?", a: ["Прометей", "Эпиметей", "Гермес", "Атлант"], k: 0 },
+
+            { c: "Легенды Древней Греции", q: "Как звали первую женщину в древнегреческом мифе?", a: ["Елена", "Пандора", "Персефона", "Афина"], k: 1 },
+
+            { c: "Легенды Древней Греции", q: "Кто был отцом Икара?", a: ["Одиссей", "Геракл", "Дедал", "Зевс"], k: 2 },
+
+            { c: "Легенды Древней Греции", q: "Что случилось с Икаром, когда он подлетел слишком близко к солнцу?", a: ["Его крылья растаяли", "Он стал богом", "Он нашёл Олимп", "Он превратился в птицу"], k: 0 },
+
+            { c: "Легенды Древней Греции", q: "Кто был богиней мудрости?", a: ["Афродита", "Афина", "Гера", "Гестия"], k: 1 },
+
+            { c: "Легенды Древней Греции", q: "Как называлась гора, где, по преданию, жили главные боги?", a: ["Парнас", "Арарат", "Олимп", "Ида"], k: 2 },
+
+            { c: "Легенды Древней Греции", q: "Кто перевозил души умерших через реку Стикс?", a: ["Харон", "Гермес", "Аид", "Орфей"], k: 0 },
+
+            { c: "Легенды Древней Греции", q: "Как звали жену Орфея, за которой он отправился в царство мёртвых?", a: ["Медея", "Эвридика", "Ариадна", "Андромеда"], k: 1 }
+
+        ];
+
+        let order = [], index = 0, blue = 0, red = 0, team = 0, locked = false;
+
+        const $ = id => document.getElementById(id);
+
+        function shuffle(arr) { return [...arr].sort(() => Math.random() - .5) }
+
+        function start() { order = shuffle(questions); index = 0; blue = 0; red = 0; team = 0; locked = false; $("game").classList.remove("hidden"); $("result").classList.add("hidden"); render() }
+
+        function render() {
+
+            locked = false; const item = order[index];
+
+            $("blueScore").textContent = blue; $("redScore").textContent = red;
+
+            $("round").textContent = `Вопрос ${index + 1} из ${order.length}`;
+
+            $("category").textContent = item.c; $("turn").textContent = `Отвечает: ${team === 0 ? "🔵 Синяя" : "🔴 Красная"} команда`;
+
+            $("progress").style.width = `${index / order.length * 100}%`;
+
+            $("question").textContent = item.q; $("feedback").textContent = "";
+
+            $("next").disabled = true; $("choices").innerHTML = "";
+
+            item.a.forEach((answer, i) => { const b = document.createElement("button"); b.className = "answer"; b.textContent = `${["А", "Б", "В", "Г"][i]}. ${answer}`; b.onclick = () => choose(i); $("choices").appendChild(b) });
+
+        }
+
+        function choose(i) {
+
+            if (locked) return; locked = true; const item = order[index]; const buttons = [...$("choices").children];
+
+            buttons.forEach((b, n) => { b.disabled = true; if (n === item.k) b.classList.add("correct"); if (n === i && i !== item.k) b.classList.add("wrong") });
+
+            if (i === item.k) {
+
+                if (team === 0) blue += 10; else red += 10;
+
+                $("feedback").textContent = "🎉 Правильно! +10 золотых монет! 🪙";
+
+            } else {
+
+                if (team === 0) blue -= 10; else red -= 10;
+
+                $("feedback").textContent = `❌ Неправильно! −10 золотых монет. Правильный ответ: ${item.a[item.k]}.`;
+
+            }
+
+            $("blueScore").textContent = blue; $("redScore").textContent = red; $("next").disabled = false;
+
+        }
+
+        function next() { if (!locked) return; index++; team = 1 - team; if (index >= order.length) { finish(); return } render() }
+
+        function finish() {
+
+            $("game").classList.add("hidden"); $("result").classList.remove("hidden");
+
+            let winner = blue > red ? "Победила 🔵 Синяя команда!" : red > blue ? "Победила 🔴 Красная команда!" : "Ничья! Обе команды достойны сокровищ!";
+
+            $("winner").textContent = winner; $("finalScores").textContent = `Синяя команда: ${blue} монет · Красная команда: ${red} монет`;
+
+        }
+
+        function restartGame() { start() }
+
+        $("next").addEventListener("click", next); $("restart").addEventListener("click", start); start();
+
+    </script>
+
+</body>
+
+</html>
